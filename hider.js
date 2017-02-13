@@ -35,19 +35,13 @@ jQuery( document ).ready(function() {
 		jQuery("#_post_type_2").parent().parent().hide(); //hides review options > post type
 
 		//Negatives > amazon buy link
-		findElementByText("Negatives").text('Paste Embed Code from Amazon').append("<p>Paste immediately after your code: [post_thumbnail_size=\"medium\"]</p>");
+		findElementByText("Negatives").text('Paste Embed Code from Amazon');
 		jQuery("#_negatives").prop('placeholder', "From the book's Kindle page on Amazon, click <Embed>.\n\rSelect 'Embed on your site (HTML).'\n\rSelect your Amazon Associates ID.\n\rCopy-paste code into this field.");
 
 		//for other elements found by text, we want to hide the parent div
 		findElementByText("Rating Metric").parent().hide();
 		findElementByText("Schema Type").parent().hide();
 		findElementByText("Total Score Override").parent().hide();
-
-
-		//hide publish button, give "save as draft" the same styling as publish button
-		jQuery("#save-post").addClass('button-primary');
-		jQuery("#major-publishing-actions, #misc-publishing-actions").hide();
-		jQuery("#minor-publishing-actions").css('margin-bottom', '10px');
 
 		//add instructions to coauthor area
 		jQuery("#coauthors-edit").prepend("<p>Include all columnists contributing to this rec</p>");
@@ -79,10 +73,19 @@ jQuery( document ).ready(function() {
 		//columnists
 		jQuery("#in-category-13").parent().append(" (you + any others)");
 
-		
-
 		//Hide "screen options"
 		jQuery("#show-settings-link").hide();
+
+		//the visual post editor is actually an iframe that renders the contents of the "text" editor tab, but we can't
+		//just change the value in that text editor tab because of the way wordpress works to propagate changes from each
+		//tab to the other. so, we have to get the value from the iframe itself
+
+		var post_text = jQuery("#content_ifr").contents().find('body').first().text();
+		var filter = "section label";
+		if (post_text.indexOf(filter) < 0){
+			jQuery("#content_ifr").contents().find('body').first().text("[section label=\"Hot Quotes\" anchor=\"Hot Quotes\"]" + post_text);
+		}
+		
 	};
 
 });
